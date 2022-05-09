@@ -6,6 +6,7 @@ import store from "../store/index.js"
 //import Content from "../views/Content.vue";
 
 
+
 const checkAuthed = function(to, from, next) {
     console.log(store.state);
     console.log(to);
@@ -64,6 +65,11 @@ const routes = [{
         path: "/",
         name: "login",
         component: Login,
+    },
+    {
+        path: '/daumtest',
+        component: () =>
+            import ('@/components/scm/DaumZipCode.vue')
     }
 ];
 

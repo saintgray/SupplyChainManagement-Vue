@@ -54,6 +54,7 @@
             this.type=this.$route.params.type;
             this.menu=this.$route.params.menu;
         },
-        components:{Menu}
+        components:{Menu},
+        
     }
 </script>

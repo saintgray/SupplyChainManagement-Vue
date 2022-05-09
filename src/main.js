@@ -5,7 +5,10 @@ import store from "./store";
 import axios from "axios";
 import VueSession from "vue-session";
 import Paginate from "vuejs-paginate-next";
+import VueDaumpostcode from "vue-daum-postcode";
+
 // import twLib from "./assets/js/twLib";
+
 
 
 // bootstrap framework 를 Vue에서 사용하기 위해
@@ -53,8 +56,7 @@ app.config.globalProperties.emitter = emitter;
 
 
 
-// set Vue settings
-// Vue.directives('b-toggle', VBToggle);
+
 
 // store, router, vueSession, sessionOptions 사용할 거야
 // 네 개 다 사용해서 app을 띄워
@@ -65,6 +67,7 @@ app
     .use(VueSession, sessionOptions)
     .use(Paginate)
     //.use(twLib)
+    .use(VueDaumpostcode)
     .mount("#app");
 
 

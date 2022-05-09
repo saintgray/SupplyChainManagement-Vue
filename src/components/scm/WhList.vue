@@ -33,14 +33,14 @@
        
 
         <div class="text-right btnMngWareHouseArea">
-            <button type="button" class="btn btn-primary" id="btnRegNew" @click='getForm("NEW")'>창고 등록</button>
+            <button type="button" class="btn btn-primary my-2" id="btnRegNew" @click='requestForm("NEW")'>창고 등록</button>
         </div>
 
         
 
         <div class="bts mt30">
             <table class="col" id="salesListTable">
-
+                
                 <thead>
                     <tr>
                         <th scope="col">창고 코드</th>
@@ -60,8 +60,8 @@
                 </tbody>
                 <tbody v-else v-for='item in salesList' :key='item.wh_id'>
             
-                    <tr @click='getForm("INFO",item.wh_id)'>
-                        <td @click='getWhInfo(item.wh_id)'>{{item.wh_id}}</td>
+                    <tr @click='requestForm("INFO",item.wh_id)'>
+                        <td>{{item.wh_id}}</td>
                         <td>{{item.wh_nm}}</td>
                         <td>{{item.loginID}}</td>
                         <td>{{item.email}}</td>
@@ -74,13 +74,15 @@
             </table>	
         </div>
     </div>
-    <!-- <WhForm></WhForm> -->
+    
+    
+    <WhForm></WhForm>
 </template>
 
 
-
 <script>
-   // import WhForm from "@/components/scm/WhList.vue";
+    import WhForm from "@/components/scm/WhForm.vue";
+
     export default{
         data:()=>{
             return{
@@ -88,23 +90,27 @@
                     selectPage:1,
                     rowsPerPage:5,
                     totalCount:0,
-                    totalPage:'',
+                    totalPage:1,
                     keyword:'',
                     searchType:'all'
                 },
                 salesList:[],
                 locationList:[],
-                advisorList:[]
+                advisorList:[],
+                
             };
         },
-        // components:{WhForm},
-        mounted:()=>{
-            //console.log('initiate warehouselist');
-            // this.getList();  
+        components:{WhForm:WhForm},
+        mounted:function(){
+            this.getList();  
+
         },
         methods:{
            
             getList:function(){
+
+                
+
                 this.axios
                     .post("/scm/vue/whlist",new URLSearchParams(this.param))
                     .then((resp)=>{
@@ -123,9 +129,19 @@
                         console.log(error);
                     })
             },
-            
+            requestForm:function(action,idx){
+                
+                idx=idx || 0;
+                let params={
+                    action:action,
+                    wh_id:idx
+                }
+                
+                this.emitter.emit('requestWhForm',params);
+            }
+        },
+       
 
-        }
     }
 </script>
 
