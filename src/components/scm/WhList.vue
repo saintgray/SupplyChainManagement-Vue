@@ -108,9 +108,6 @@
         methods:{
            
             getList:function(){
-
-                
-
                 this.axios
                     .post("/scm/vue/whlist",new URLSearchParams(this.param))
                     .then((resp)=>{

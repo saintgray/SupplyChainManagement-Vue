@@ -65,11 +65,6 @@ const routes = [{
         path: "/",
         name: "login",
         component: Login,
-    },
-    {
-        path: '/daumtest',
-        component: () =>
-            import ('@/components/scm/DaumZipCode.vue')
     }
 ];
 

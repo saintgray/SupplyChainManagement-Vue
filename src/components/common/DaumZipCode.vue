@@ -5,8 +5,6 @@
 </template>
 
 <script>
-
-// import { defineAsyncComponent } from '@vue/runtime-core';
 export default {
     data: function() {
         return {

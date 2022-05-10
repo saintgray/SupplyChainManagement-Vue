@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import DaumZipCode from "./DaumZipCode.vue";
+import DaumZipCode from "../common/DaumZipCode.vue";
 import {openModal, closeModal} from "jenesius-vue-modal";
 
 export default {

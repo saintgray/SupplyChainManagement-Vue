@@ -1,15 +1,15 @@
 <template>
-    <!-- HTML 내용 -->
-    <!-- <div id="nav">
+  <!-- HTML 내용 -->
+  <!-- <div id="nav">
     <router-link to="/">Home</router-link>|
     <router-link to="/Regi">회원가입</router-link>|
     <router-link to="/medi">WebPage</router-link>|
     <router-link to="/WebPage">notice</router-link>
   </div>
   <router-view /> -->
-    <!-- div처럼 이 영역에 뿌리도록 설정 -->
-    <router-view></router-view>
-    <widget-container-modal />
+  <!-- div처럼 이 영역에 뿌리도록 설정 -->
+  <router-view></router-view>
+  <widget-container-modal />
 </template>
 
 <script>
@@ -23,8 +23,8 @@ import Dashboard from "@/views/Dashboard.vue"; */
 
 // 팝업을 띄우기 위해 components에 container 설정 (decrepated)
 export default {
-    components: { WidgetContainerModal: container },
-    name: "app",
+  components: { WidgetContainerModal: container },
+  name: "app",
 };
 </script>
 
@@ -49,4 +49,8 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 } */
+
+.modal-container {
+  z-index: 100;
+}
 </style>
