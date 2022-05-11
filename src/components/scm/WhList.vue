@@ -1,42 +1,30 @@
 <template>
 
+    <div class="searchArea d-flex justify-content-around">
+ 
+        <select v-model="param.searchType" class="form-control" style="height:auto">
+                <option value="all">전체</option>
+                <option value="wh_nm" >창고명</option>
+                <option value="wh_loc" >창고 위치</option>
+        </select>
+        
 
-    <!-- SearchArea -->
-    <div class="searchArea">
-        <table style="margin-top: 10px" width="100%" cellpadding="5" cellsapcing="0" border="1">
-        <tr style="border: 0px; border-color: blue">
-            <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
-            <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
-                <select v-model="param.searchType" style="width: 150px;">
-                        <option value="all">전체</option>
-                        <option value="wh_nm" >창고명</option>
-                        <option value="wh_loc" >창고 위치</option>
-                </select>
-                
-    
-                <input v-model="param.keyword" type="text" style="width: 300px; height: 25px;">
-                
-                
-                <div class="bts btnMngWareHouseArea" id="searchBtnWrap">
-                    <button type="button" class="btn btn-primary" @click="getList()">검색</button>
-                </div>                 
-                
-                </td> 
-            </tr>
-        </table>
+        <input v-model="param.keyword" type="text" class="form-control" style="width:50%">
+        
+        
+        <div class="bts btnMngWareHouseArea" id="searchBtnWrap">
+            <button type="button" class="btn btn-primary" @click="getList()">검색</button>
+        </div>                 
+
     </div>
 
     
     <!--List Area -->
     <div id="whListArea" class="bts">
 
-       
-
         <div class="text-right btnMngWareHouseArea">
             <button type="button" class="btn btn-primary my-2" id="btnRegNew" @click='requestForm("NEW")'>창고 등록</button>
         </div>
-
-        
 
         <div class="bts mt30">
             <table class="col" id="salesListTable">
@@ -73,15 +61,30 @@
 
             </table>	
         </div>
+
+        <pagination class="mt-4 justify-content-center"
+                :v-model="param.selectPage"
+                :page-count="param.totalPage"
+                :page-range=5
+                :margin-pages=0
+                :click-handler="clickPageCallBack"
+                :prev-text="'이전'"
+                :next-text="'다음'"
+                :prev-class="'prev'"
+                :container-class="'pagination'"
+                :page-class="'page-item'">
+        </pagination>
+
     </div>
     
-    
     <WhForm></WhForm>
+    
 </template>
 
 
 <script>
     import WhForm from "@/components/scm/WhForm.vue";
+    import Paginate from "vuejs-paginate-next"
 
     export default{
         data:()=>{
@@ -100,23 +103,24 @@
                 
             };
         },
-        components:{WhForm:WhForm},
+        components:{WhForm:WhForm, pagination:Paginate},
         mounted:function(){
             this.getList();  
 
         },
         methods:{
            
-            getList:function(){
+            getList:function(selectPage){
+                this.param.selectPage=selectPage || 1;
                 this.axios
                     .post("/scm/vue/whlist",new URLSearchParams(this.param))
                     .then((resp)=>{
                         let data=resp.data;
                         this.param={
-                            selectPage:data.page.selectPage,
+                            selectPage:parseInt(data.page.selectPage),
                             rowsPerPage:data.page.rowsPerPage,
-                            totalCount:data.page.totalCount,
-                            totalPage:data.page.totalPage,
+                            totalCount:parseInt(data.page.totalCount),
+                            totalPage:parseInt(data.page.totalPage),
                             keyword:data.page.keyword,
                             searchType:data.page.searchType
                         }
@@ -125,6 +129,10 @@
                     .catch((error)=>{
                         console.log(error);
                     })
+            },
+            clickPageCallBack:function(pageChosen){
+                this.param.selectPage=pageChosen;
+                this.getList(pageChosen);
             },
             requestForm:function(action,idx){
                 

@@ -659,6 +659,7 @@ li.lnb #lnb_area .logo {
     width: 100%;
     background: url(/images/admin/comm/left_logoBg01.jpg) no-repeat;
     text-align: center;
+    background-position: 1px;
 }
 
 li.lnb #lnb_area .logo strong {

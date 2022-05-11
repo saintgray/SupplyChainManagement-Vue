@@ -39,7 +39,8 @@ export default{
         Home :defineAsyncComponent(()=>import('@/views/Home.vue')),
         ProductMng : defineAsyncComponent(()=>import('@/views/scm/productMng.vue')),
         Whinfo : defineAsyncComponent(()=>import('@/views/scm/whinfo.vue')),
-        ComnCodMgr:defineAsyncComponent(()=>import('@/views/system/comnCodMgr.vue'))
+        ComnCodMgr:defineAsyncComponent(()=>import('@/views/system/comnCodMgr.vue')),
+        DailyOrderHistory:defineAsyncComponent(()=>import('@/views/scm/dailyOrderHistory.vue'))
 
        
     },
