@@ -25,7 +25,7 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td colspan="4">주문내역이 비었습니다 오류인 것 같습니다</td>
+                            <td colspan="4">주문내역이 비었습니다 DB 의 정합성이 맞지 않습니다. 팀원에게 문의하세요</td>
                         </tr>
                     </template>
 
@@ -54,38 +54,52 @@
                                 타입이 list가 아니라 Map 이기 때문에
                                 axios 통신시 객체형태로 변환되게 된다.
                                 {상품이름1:유효한창고리스트... , 상품이름2:유효한창고리스트2...}
-                        -->
-                        <template v-for='(value,name) in stocksMap' :key="name" >
+                        --> 
+                        <template v-if="Object.keys(stocksMap).length>0">
+                        
 
-                            <div class="my-3">
-                                <div class="text-left mb-1">
-                                    <strong class="pl-2">{{name}}</strong>
-                                </div>
-                                <table class="col">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">선택</th>
-                                            <th scope="col">창고</th>
-                                            <th scope="col">총 재고</th>
-                                            <th scope="col">출고예정</th>
-                                            <th scope="col">유효재고</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody v-for='info in value' :key='info.wh_id'>
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" class="shippingTarget" :value='info.wh_id+","+info.sales_id'>
-                                            </td>
-                                            <td>{{info.wh_nm}}</td>
-                                            <td>{{info.st_cnt}}</td>
-                                            <td>{{info.export_cnt}}</td>
-                                            <td>{{info.valid_cnt}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>   
+                            
+                            <template v-for='(value,name) in stocksMap' :key="name">
+
+                                <div class="my-3">
+                                    <div class="text-left mb-1">
+                                        <strong class="pl-2">{{name}}</strong>
+                                    </div>
+                                    <table class="col">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">선택</th>
+                                                <th scope="col">창고</th>
+                                                <th scope="col">총 재고</th>
+                                                <th scope="col">출고예정</th>
+                                                <th scope="col">유효재고</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template  v-for='info in value' :key='info.wh_id'>
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="shippingTarget" :value='info.wh_id+","+info.sales_id' @change="selectCheckBox">
+                                                    </td>
+                                                    <td>{{info.wh_nm}}</td>
+                                                    <td>{{info.st_cnt}}</td>
+                                                    <td>{{info.export_cnt}}</td>
+                                                    <td>{{info.valid_cnt}}</td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>   
+                            </template>
+
+                        </template>
+                        <template v-if="Object.keys(stocksMap).length==0">
+                            <div class="my-5 text-center">
+                                <strong>주문한 상품이 창고에 없습니다 발주를 먼저 진행하세요</strong>
+                            </div>
                         </template>
                     </div>
+                    
 
                     <div id="v-orderAndReturn" v-if="orderDirActivate">
                         <!-- list 가 담은 정보 : 해당 주문 및 반품 정보에 있는 상품 번호와 상품이름 정보 -->
@@ -110,8 +124,8 @@
                         </template>
                     </div>
 
-                    <div class="text-center mt-4    ">
-                        <button type="button" class="btn btn-primary mx-2" @click="writeBtn">작성</button> 
+                    <div class="text-center mt-4">
+                        <button type="button" class="btn btn-primary mx-2" @click="writeDir">작성</button> 
                         <button type="button" class="btn btn-light mx-2" @click="close">취소</button>
                     </div>
                 </div>
@@ -161,7 +175,9 @@
                         console.log(resp);
                         if(formType=='shippingDir'){
                             vm.orderDirActivate=false;
+                           
                             vm.shippingDirActivate=true;
+                            
                             vm.stocksMap=resp.data.list;
                             console.log(vm.stocksMap);
                         }else if(formType=='orderDir'){
@@ -177,74 +193,147 @@
 
                     return true;
             },
-            writeBtn:function(){
+            writeDir:function(){
                 let checkedDom = document.querySelector('input[name="formType"]:checked');
-                let formType=checkedDom.value;
-                let idxList=[];
-                let targetWh=[];
-                let params={};
-                
-
-                if(formType=='shippingDir'){
+                if(this.directivesIsChecked(checkedDom)){
                     
-                    let targets=document.querySelectorAll('.shippingTarget:checked');
-                    targets.forEach((item)=>{
-                        targetWh.push(item.value);
-                    })
-                    this.infoList.forEach(function(item){
-                        console.log(item);
-                        idxList.push(item.purinf_id);
-                    })
-                    console.log(idxList);
-                    console.log(targetWh);
-                    params={
-                        formType:formType,
-                        idxList:idxList,
-                        targetWh:targetWh
-                    }
-                    console.log(params);
-                }else if(formType=='orderDir'){
-                    document.querySelectorAll('.orderinfo').forEach(function(item){
-                        // 납품회사번호
-                        let compID=item.querySelector('.supplyIdx').value;
-                        // 상품번호
-                        let salesID=item.querySelector('.idx').value;
-                        // 2개의 쌍을 targetWh에 추가
-                        if(!(compID.indexOf(',')==-1 || salesID.indexOf(',')==-1)){
-                            alert('유효하지 않은 요청입니다');
+                    let formType=checkedDom.value;
+                    let params=new URLSearchParams();
+                   
+                    let globalValidated=true;
+
+
+                    if(formType=='shippingDir'){
+                        let shippingTargets=document.querySelectorAll('.shippingTarget');
+                        let targets=document.querySelectorAll('.shippingTarget:checked');
+                        let orderinfos=document.querySelectorAll('#orderinfo tbody tr');
+                        if(this.shippingDirIsValidated(shippingTargets, targets, orderinfos)){
+                            targets.forEach((item)=>{
+                                params.append('targetWh',item.value);
+                            });
+                            this.infoList.forEach((item)=>{
+                                params.append('idxList',item.purinf_id);
+                            });
                         }else{
-                            targetWh.push(compID+','+salesID);
+                            globalValidated=false;
                         }
-                    })
-                    params={
-                        targetWh:targetWh
+                    }else if(formType=='orderDir'){
+                        let orderinfos= document.querySelectorAll('.orderinfo');
+                        if(this.orderDirIsValidated(orderinfos)){
+                            document.querySelectorAll('.orderinfo').forEach(function(item){
+                                // 상품번호
+                                let salesID=item.querySelector('.idx').value;
+                                // 납품회사번호
+                                let compID=item.querySelector('.supplyIdx').value;
+                                // 수량
+                                let quantInputDom=item.querySelector('.orderCnt');
+                                let quant = quantInputDom.value;  
+
+                                
+                                //let regExp=new RegExp(/^[1-9]+\d*$/g);
+                                // if(!regExp.test(quant)){
+                                //     alert('수량은 숫자만 입력가능합니다');
+                                //     globalValidated=false;
+                                //     return;
+                                // }else{
+                                    // 3개의 쌍을 targetWh에 추가
+                                    // targetWh.push(compID);
+                                    params.append('targetWh',salesID+','+compID+','+quant);    
+                                // }                       
+                            })
+                        }else{
+                            globalValidated=false;
+                        }
+                        
+                        if(globalValidated){
+                            params.append('formType',formType);
+                            let vm=this;
+                            let msg=formType=='shippingDir'?'배송지시서':'발주지시서';
+                            
+                                if(confirm(msg+' 를 작성하시겠습니까?')){
+                                
+                                    this.axios({
+                                        url:'/scm/vue/direction',
+                                        data:params,
+                                        method:'post'
+                                    })
+                                    .then((resp)=>{
+                                        switch(resp.status){
+                                            case 500:{
+                                                alert('123');
+                                                break;
+                                            }
+                                            case 801:{
+                                                alert('숫자만 입력하실 수 있습니다');
+                                                break;
+                                            }
+                                            case 200:{
+                                                if(formType=="shippingDir"){
+                                                    alert('배송지시서가 작성되었습니다');
+                                                }else{
+                                                    alert('발주 지시서가 작성되었습니다');
+                                                }
+                                                vm.emitter.emit('requestOrdersList');
+                                                closeModal(vm);
+                                            }
+                                        }
+                                    })
+                                    .catch((err)=>{
+                                        console.log(err);
+                                    })
+                                }
+                        }
                     }
                 }
-                
-                // this.axios
-                //     .post('/scm/vue/dir',new URLSearchParams(params))
-                //     .then((resp)=>{
-                //         console.log(resp);
-                //     })
-                //     .catch((err)=>{
-                //         console.log(err);
-                //     })
             },
-            close:function(){
-                if(confirm('작성을 그만두고 창을 닫으시겠습니까?')){
-                     closeModal(this);
+            directivesIsChecked:function(checkedDom){
+                let checked=true;
+                if(checkedDom==null || checkedDom==undefined){
+                    alert('지시서를 선택하세요');
+                    checked=false;
                 }
+                return checked;
+            },
+            shippingDirIsValidated:function(shippingTargets, targets, orderinfos){
+                let validated=true;
+                if(targets==null || shippingTargets.length!=orderinfos.length){
+                    alert('창고에 없는 주문상품이 있습니다. 발주를 먼저 진행하세요');
+                    validated=false;
+                }else{
+                    if(targets.length!=orderinfos.length){
+                        alert('출고창고를 선택하지 않은 상품이 있습니다');
+                        validated=false;
+                    }
+                }
+                return validated;
+            },
+            orderDirIsValidated:function(orderinfos){
+                let validated=true;
+                if(orderinfos==null){
+                    validated=false;
+                    alert('발주 상품이 없습니다');
+                }
+                return validated;
+            },
+            close:function(){ 
+                closeModal(this);
             },
             cancel:function(event,salesName){
                 if(confirm(salesName+' 발주를 취소하시겠습니까?')){
                     event.target.parentNode.parentNode.remove();
                 }
+            },
+            selectCheckBox:function(event){
+                console.log('checked/...');
+                let tBodyDom=event.target.parentNode.parentNode.parentNode;
+                tBodyDom.querySelectorAll('.shippingTarget:checked').forEach((item)=>{
+                    if(item!==event.currentTarget){
+                        item.checked=false;
+                    }                    
+                });          
             }
-           
-            
         }
     }
-
 </script>
 
 <style>

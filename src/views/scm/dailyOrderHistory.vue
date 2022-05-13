@@ -13,13 +13,13 @@
         
         <div class="d-flex mb-4">
 
-            <div>
+            <!-- <div>
                 <input type="radio" v-model="param.typeByRef" value="returnOnly" @click="returns($event)">반품요청
                 <input type="radio" v-model="param.typeByRef" value="purchaseOnly" @click="returns($event)">미반품요청    
-            </div>
+            </div> -->
             
             <div style="display:inline-block;" class="flex-grow-1 text-center"> 
-                <select class="mr-2" v-model="param.typeByDate">
+                <select class="mr-2" v-model="param.typeOfDate">
                     <option value="" >전체</option>
                     <option value="0" >주문일자로 조회</option>
                     <option value="1" >반품처리일자로 조회</option>
@@ -31,10 +31,10 @@
 
             <div>
                 <a class="btn btn-primary">
-                    <span @click="getList" >검  색</span>
+                    <span @click="search">검  색</span>
                 </a>
                 <a class="btn btn-light">
-                    <span @click="reset" >초기화</span>
+                    <span @click="reset">초기화</span>
                 </a>       
             </div>
             
@@ -75,8 +75,8 @@
                         <td colspan="8">일치하는 검색 결과가 없습니다</td>
                     </tr>
                 </template>
-                <template v-else v-for="item in orders" :key="item.pur_id">
-                    <tr @click="purchaseDetail(item.pur_id)">
+                <template v-else>
+                    <tr @click="purchaseDetail(item.pur_id)" v-for="item in orders" :key="item.pur_id">
                         <td>{{item.pur_id}}</td>
                         <td>{{item.purdate}}</td>
                         <td>{{item.name}}</td>
@@ -93,7 +93,7 @@
             </tbody>
         </table>
         <pagination class="mt-4 justify-content-center"
-                :v-model="param.selectPage"
+                :v-model="param.currentPage"
                 :page-count="param.totalPage"
                 :page-range=5
                 :margin-pages=0
@@ -123,8 +123,8 @@
                     pageSize:10,
                     total:0,
                     totalPage:1,
-                    typeByRef:'returnOnly',
-                    typeByDate:'',
+                    selectsearch:null,
+                    typeOfDate:'',
                     dateSearch1:'',
                     dateSearch2:''
                 },
@@ -133,8 +133,12 @@
             }
         },
         components:{
-            pagination:Paginate, 
-            //bDatepicker:BFormDatepicker
+            pagination:Paginate,    
+        },
+        created:function(){
+            this.emitter.on('requestOrdersList',()=>{
+                this.getList(this.param.currentPage);
+            })            
         },
         mounted:function(){
             this.getList(1);
@@ -142,8 +146,10 @@
         methods:{
             getList(selectPage){
                 this.param.currentPage = selectPage || 1;
-                if(this.param.dateSearch1>this.param.dateSearch2){
-                    alert('정확히 입력하세요!');
+                if(this.param.dateSearch1 && this.param.dateSearch2){
+                    this.param.selectsearch='fullchoiced';
+                }else{
+                    this.reset();
                 }
                 let vm=this;
                 this.axios
@@ -151,42 +157,51 @@
                     .then((resp)=>{
                         let data =resp.data;
                         console.log(data);
-                        vm.param={
-                            currentPage:data.currentPage,
-                            pageSize:data.pageSize,
-                            total:data.total,
-                            totalPage:data.totalPage,
-                            typeByRef:data.typeByRef,
-                            typeByDate:data.typeByDate,
-                            dateSearch1:data.dateSearch1,
-                            dateSearch2:data.dateSearch1
+                        vm.param.currentPage=data.currentPage;
+                        vm.param.pageSize=data.pageSize;
+                        vm.param.total=data.total;
+                        vm.param.totalPage=data.totalPage;
+                       
+                        console.log(vm.param);
+                        if(data.orders){
+                            vm.orders=data.orders;
+                        }else{
+                            vm.orders=[];
                         }
-                        vm.orders=data.orders;
-                        
-                        
                     })
                     .catch((err)=>{
                         console.log(err);
                     })
-
             },
             clickPageCallBack:function(pageChosen){
-                this.param.selectPage=pageChosen;
+                this.param.currentPage=pageChosen;
                 this.getList(pageChosen);
+            },
+            search:function(){
+                let date_start= this.param.dateSearch1;
+                let date_end=this.param.dateSearch2;
+                if((date_start=="" && date_end) || (date_start && date_end=="")){
+                    alert('날짜를 선택하세요');
+                }else{
+                    if(date_start>date_end){
+                        let tempDate=date_start;
+                        this.param.dateSearch1=date_end;
+                        this.param.dateSearch2=tempDate;
+                    }
+                    this.getList(1);
+                }
+                
+                
             },
             purchaseDetail:function(idx){
                 openModal(OrderDetail,{idx:idx});
             },
             reset:function(){
-                console.log('reset...');
-                // empty this instance param 
-                // code not write yet
+                console.log('reset start');
+                this.param.selectsearch=null;
+                this.param.dateSearch1='';
+                this.param.dateSearch2='';
             },
-            returns:function(event){
-                console.log(event);
-            }
-            
-
         },
         
     }
