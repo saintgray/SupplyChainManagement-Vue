@@ -41,7 +41,8 @@ export default{
         Whinfo : defineAsyncComponent(()=>import('@/views/scm/whinfo.vue')),
         ComnCodMgr:defineAsyncComponent(()=>import('@/views/system/comnCodMgr.vue')),
         DailyOrderHistory:defineAsyncComponent(()=>import('@/views/scm/dailyOrderHistory.vue')),
-        WhInventoryForm:defineAsyncComponent(()=>import('@/views/scm/whInventoryForm.vue'))
+        WhInventoryForm:defineAsyncComponent(()=>import('@/views/scm/whInventoryForm.vue')),
+        Userinfo:defineAsyncComponent(()=>import('@/views/scm/userinfo.vue'))
 
        
     },

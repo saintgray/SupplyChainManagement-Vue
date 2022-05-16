@@ -228,18 +228,16 @@
                                 // 수량
                                 let quantInputDom=item.querySelector('.orderCnt');
                                 let quant = quantInputDom.value;  
-
-                                
-                                //let regExp=new RegExp(/^[1-9]+\d*$/g);
-                                // if(!regExp.test(quant)){
-                                //     alert('수량은 숫자만 입력가능합니다');
-                                //     globalValidated=false;
-                                //     return;
-                                // }else{
+                                let regExp=new RegExp(/^[1-9]+\d*$/g);
+                                if(!regExp.test(quant)){
+                                    alert('수량은 숫자만 입력가능합니다');
+                                    globalValidated=false;
+                                    return;
+                                }else{
                                     // 3개의 쌍을 targetWh에 추가
                                     // targetWh.push(compID);
                                     params.append('targetWh',salesID+','+compID+','+quant);    
-                                // }                       
+                                }                       
                             })
                         }else{
                             globalValidated=false;
@@ -250,38 +248,38 @@
                             let vm=this;
                             let msg=formType=='shippingDir'?'배송지시서':'발주지시서';
                             
-                                if(confirm(msg+' 를 작성하시겠습니까?')){
-                                
-                                    this.axios({
-                                        url:'/scm/vue/direction',
-                                        data:params,
-                                        method:'post'
-                                    })
-                                    .then((resp)=>{
-                                        switch(resp.status){
-                                            case 500:{
-                                                alert('123');
-                                                break;
-                                            }
-                                            case 801:{
-                                                alert('숫자만 입력하실 수 있습니다');
-                                                break;
-                                            }
-                                            case 200:{
-                                                if(formType=="shippingDir"){
-                                                    alert('배송지시서가 작성되었습니다');
-                                                }else{
-                                                    alert('발주 지시서가 작성되었습니다');
-                                                }
-                                                vm.emitter.emit('requestOrdersList');
-                                                closeModal(vm);
-                                            }
+                            if(confirm(msg+' 를 작성하시겠습니까?')){
+                            
+                                this.axios({
+                                    url:'/scm/vue/direction',
+                                    data:params,
+                                    method:'post'
+                                })
+                                .then((resp)=>{
+                                    switch(resp.status){
+                                        case 500:{
+                                            alert('123');
+                                            break;
                                         }
-                                    })
-                                    .catch((err)=>{
-                                        console.log(err);
-                                    })
-                                }
+                                        case 801:{
+                                            alert('숫자만 입력하실 수 있습니다');
+                                            break;
+                                        }
+                                        case 200:{
+                                            if(formType=="shippingDir"){
+                                                alert('배송지시서가 작성되었습니다');
+                                            }else{
+                                                alert('발주 지시서가 작성되었습니다');
+                                            }
+                                            vm.emitter.emit('requestOrdersList');
+                                            closeModal(vm);
+                                        }
+                                    }
+                                })
+                                .catch((err)=>{
+                                    console.log(err);
+                                })
+                            }
                         }
                     }
                 }

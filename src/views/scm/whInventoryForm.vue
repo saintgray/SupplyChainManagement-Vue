@@ -35,18 +35,20 @@
                     </tr>
                 </thead>
                 <tbody v-if="total>0">
-                    <tr v-for="item in inventories" :key="item.wh_id" @click="inventoryDetail(item.wh_id)">
-                        <td>{{item.wh_id}}</td>
-                        <td>{{item.wh_nm}}</td>
-                        <td>{{item.st_cnt}}</td>
-                        <td>{{item.wh_loc}}</td>
-                        <td>{{item.addr}}</td>
-                    </tr>
-                    <template v-if="inventorySelected==item.wh_id">
-                        <tr>
-                            <StocksDetail>
-                            </StocksDetail>
+                    <template  v-for="item in inventories" :key="item.wh_id">
+                        <tr @click="inventoryDetail(item.wh_id)">
+                            <td>{{item.wh_id}}</td>
+                            <td>{{item.wh_nm}}</td>
+                            <td>{{item.st_cnt}}</td>
+                            <td>{{item.wh_loc}}</td>
+                            <td>{{item.addr}}</td>
                         </tr>
+                        <template v-if="item.wh_id==inventorySelected">
+                            <tr>
+                                <StocksDetail :detail="detail">
+                                </StocksDetail>
+                            </tr>
+                        </template>
                     </template>
                 </tbody>
             </table>
@@ -82,36 +84,56 @@
                     total:0,
                 },
                 inventories:[],
+                detail:{},
                 inventorySelected:0
             }
         },
         components:{Pagination:Paginate, StocksDetail:StockDetail},
+        created:function(){
+            this.getInventories();
+        },
         methods:{
             getInventories:function(selectPage){
-                this.param.currentPage=selectPage || 1;
+                selectPage=selectPage || 1;
                 let vm= this;
+                vm.param.currentPage=selectPage;
+                console.log(vm.param);
                 this.axios
-                    .post('/scm/vue/inventories')
+                    .post('/scm/vue/inventories', new URLSearchParams(vm.param))
                     .then((resp)=>{
                         let data=resp.data;
+                        console.log(data);
                         this.total=data.total;
                         vm.param.currentPage=data.currentPage;
                         vm.param.totalPage=data.totalPage;
                         vm.inventories=data.inventories;
+                        console.log(vm.inventories);
                     })
                     .catch((err)=>{
                         console.log(err);
                     })
 
             },
-            inventoryDetail:function(idx){
-                this.axios
+            inventoryDetail:function(idx){  
+                let vm = this;
+                
+                if(vm.inventorySelected==idx|| vm.inventorySelected!=idx){
+                    vm.inventorySelected==0;
+                    vm.detail={};
+                }else{
+                    this.axios
                     .post('/scm/vue/stocks/'+idx)
                     .then((resp)=>{
                         let data=resp.data;
-                        console.log(data);
+                        vm.detail=data.detail;
+                        vm.detail=data.detail;
+                        vm.inventorySelected=idx;
                     })
-            }
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+                }
+            },
         },
     }
 

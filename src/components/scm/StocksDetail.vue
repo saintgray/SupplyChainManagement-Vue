@@ -25,6 +25,7 @@
 
 <script>
     export default{
+        props:{detail:Object},
         data:function(){
             return{
                 stockDetail:{}
