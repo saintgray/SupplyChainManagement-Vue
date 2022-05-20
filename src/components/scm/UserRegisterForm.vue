@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-5">
+    <div id="userinfoarea" class="mt-5">
         <table>
             <tbody>
                 <tr class="basicinfo-row1">
@@ -104,15 +104,24 @@
             register:function(action){
                 let formData=new FormData(document.getElementById('userRegForm'));
                 formData.append('action',action);
+
+                let vm=this;
                 this.axios
                     .post('/scm/vue/user',formData)
                     .then((resp)=>{
                         console.log(resp);
+                        if(resp.status==200){
+                            alert('정상적으로 등록되었습니다');
+                            vm.emitter.emit('close',null);
+                        }else{
+                            alert('잠시 후 다시 시도하세요');
+                        }
                     })
                     .catch((err)=>{
                         let resp=err.response;
-                        console.log('err catched');
-                        console.log(resp);
+                        if(resp.status==903){
+                            alert('이미 존재하거나 탈퇴한 회원입니다');
+                        }
                     })
             },
             zipSelectedCallBack:function(payLoad){
@@ -130,7 +139,6 @@
             },
             close:function(){
                 if(confirm('등록을 취소하시겠습니까?')){
-                   // this.$destroy();
                    this.emitter.emit('close',null);
                 }
             }

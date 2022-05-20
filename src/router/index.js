@@ -8,13 +8,13 @@ import store from "../store/index.js"
 
 
 const checkAuthed = function(to, from, next) {
-    console.log(store.state);
-    console.log(to);
+    // console.log(store.state);
+    // console.log(to);
     if (store.state.loginInfo == null) {
         alert('로그인이 필요합니다');
         return next('/');
     } else {
-        console.log(to.fullPath);
+        //console.log(to.fullPath); 
 
         let isAuthorized = false;
 
@@ -28,7 +28,7 @@ const checkAuthed = function(to, from, next) {
             })
         } catch (e) {
             isAuthorized = true;
-            console.log('user is authorized for this menu')
+            // console.log('user is authorized for this menu')
         }
 
         if (isAuthorized || to.fullPath == '/dashboard/home') {

@@ -17,7 +17,7 @@
             <option value="user_nm">담당자명</option>
             <option value="task">담당업무</option>
         </select>
-        <input type="text" class="form-control" style="width:50%;" v-model="param.keyword">
+        <input type="text" class="form-control" style="width:50%;" v-model="param.keyword" @keydown.enter='getUserList(1)'>
         <div style="line-height:36px;">
             <input type="checkbox" v-model="param.showall">
             <span class="mx-2">삭제된 정보 표시</span>
@@ -77,16 +77,16 @@
         <div class="bts userInfoBtnArea" style="margin: 10px 0">
             <div class="text-right">
                 <button type="button" class="btn btn-primary mx-2" @click="openRegisterForm">신규등록</button>
-                <button type="button" class="btn btn-danger" id="delUserBtn">삭제</button>
+                <button type="button" class="btn btn-danger" @click='delUser'>삭제</button>
             </div>
         </div>
 
         <PageNavi class="mt-4 justify-content-center"
-                :v-model="param.currentPage"
+                :v-model="param.selectPage"
                 :page-count="param.totalPage"
                 :page-range=5
                 :margin-pages=0
-                :click-handler="clickPageCallBack"
+                :click-handler="getUserList"
                 :prev-text="'이전'"
                 :next-text="'다음'"
                 :prev-class="'prev'"
@@ -95,115 +95,136 @@
         </PageNavi>    
     </div>
 
-
-
     <!-- User Form Area -->
     <form id="userRegForm">
         <UserRegForm v-if='buttonAction.actionType=="NEW"'></UserRegForm>
         <UserDetail v-if='buttonAction.actionType=="INFO"' :userInfo="userInfo"></UserDetail>
     </form>
 
-
-
-    
 </template>
 
 
 
 
 <script>
-import PageNavi from "vuejs-paginate-next";
-import UserRegForm from "@/components/scm/UserRegisterForm.vue";
-import UserDetail from "@/components/scm/UserDetail.vue";
-export default{
+    import PageNavi from "vuejs-paginate-next";
+    import UserRegForm from "@/components/scm/UserRegisterForm.vue";
+    import UserDetail from "@/components/scm/UserDetail.vue";
 
-    data:function(){
-        return{
-            param:{
-                selectPage:1,
-				rowsPerPage:5,
-				totalCount:0,
-                totalPage:1,
-                keyword:null,
-				showall:'',
-				searchType:'all'
-            },
-            userlist:[],
-            buttonAction:{
-                // form or manage
-                actionType:'',
-                // form : NEW or INFO
-                // manage : CREATE , DELETE , EDIT
-                action:'',
-                // user PK for manage(DELETE, EDIT)
-                id:''
-            },
-            userInfo:{}
-        }
-    },
-    components:{PageNavi:PageNavi, UserRegForm, UserDetail},
-    created:function(){
-        this.emitter.on('close',()=>{
-            this.buttonAction.actionType='';
-        })
-        this.getUserList();
-    },
-    methods:{
-        getUserList:function(selectPage){
-            let vm=this;
-            selectPage = selectPage || 1;
-            vm.param.selectPage=selectPage;
-            console.log(vm.param);
-            this.axios
-                .post('/scm/vue/users',new URLSearchParams(vm.param))
-                .then((resp)=>{
-                    let page=resp.data.page;
-                    console.log(page);
-                    vm.param.selectPage=page.selectPage;
-                    vm.param.totalCount=page.totalCount;
-                    vm.param.totalPage=Number(page.totalPage);
-                    vm.userlist=page.userlist
-                })
-                .catch((err)=>{
-                    console.log(err);
-                })
-        },
-        clickPageCallBack:function(page){
-            this.param.selectPage=page;
-            this.getUserList(page);
-        },
-        getUserDetail:function(id){
-            
-            let vm=this;
-            
+    export default{
 
-            this.axios
-                .post('/scm/vue/user/'+id)
-                .then((resp)=>{
-                    let data=resp.data;
-                    console.log(data);
-                    vm.userInfo=data.info;
-                    vm.buttonAction.actionType="INFO";
-                })
-                .catch((err)=>{
-                    // error 의 응답 객체는 err.response 로 받을 수 있다.
-                    let status=err.response.status;
-                    if(status==903){
-                        alert('삭제된 회원이거나 없는 회원입니다');
-                        vm.getUserList(vm.param.selectPage);
-                    }
-                })
-            
-            
-
-        },
-        openRegisterForm:function(){
-            if(this.buttonAction.actionType!='NEW'){
-                this.buttonAction.actionType="NEW"
+        data:function(){
+            return{
+                param:{
+                    selectPage:1,
+                    rowsPerPage:5,
+                    totalCount:0,
+                    totalPage:1,
+                    keyword:'',
+                    showall:'',
+                    searchType:'all'
+                },
+                userlist:[],
+                buttonAction:{
+                    // form or manage
+                    actionType:'',
+                    // form : NEW or INFO
+                    // manage : CREATE , DELETE , EDIT
+                    action:'',
+                    // user PK for manage(DELETE, EDIT)
+                    id:''
+                },
+                userInfo:{}
             }
         },
+        components:{PageNavi:PageNavi, UserRegForm, UserDetail},
+        watch:{
+            buttonAction:{
+                deep:true,
+                handler:function(changed){
+                    if(changed.actionType!='INFO'){
+                        this.userInfo={};
+                    }
+                }
+            },
+        },
+        created:function(){
+            this.emitter.on('close',()=>{
+                this.buttonAction.actionType='';
+                this.userInfo={};
+            })
+            this.getUserList();
+        },
+        methods:{
+            getUserList:function(selectPage){
+                let vm=this;
+                selectPage = selectPage || 1;
+                vm.param.selectPage=selectPage;
+                vm.param.showall=vm.param.showall?'Y':'N'
+                
+                this.axios
+                    .get('/scm/vue/users?'+new URLSearchParams(vm.param).toString())
+                    .then((resp)=>{
+                        let page=resp.data.page;
+                        vm.param.selectPage=page.selectPage;
+                        vm.param.totalCount=page.totalCount;
+                        vm.param.totalPage=Number(page.totalPage);
+                        vm.userlist=page.userlist;
+                        vm.param.showall=vm.param.showall=='Y'?true:false;
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+            },
+            getUserDetail:function(id){
+                let vm=this;
+                this.axios
+                    .get('/scm/vue/user/'+id)
+                    .then((resp)=>{
+                        let data=resp.data;
+                        vm.userInfo=data.info;
+                        vm.buttonAction.actionType="INFO";
+                    })
+                    .catch((err)=>{
+                        // error 의 응답 객체는 err.response 로 받을 수 있다.
+                        let status=err.response.status;
+                        if(status==903){
+                            alert('삭제된 회원이거나 없는 회원입니다');
+                            vm.getUserList(vm.param.selectPage);
+                        }
+                    })
+            },
+            openRegisterForm:function(){
+                if(this.buttonAction.actionType!='NEW'){
+                    this.buttonAction.actionType="NEW"
+                }
+            },
+            delUser:function(){
+                if(Object.keys(this.userInfo).length==0){
+                    alert('회원을 선택하세요');
+                }else if(confirm('삭제하시겠습니까?')){
+                    let id=this.userInfo.loginID;
+                    let vm=this;
+                        this.axios
+                            .delete('/scm/vue/user/'+id)
+                            .then((resp)=>{
+                                if(resp.status==200){
+                                    alert('정상적으로 삭제되었습니다');
+                                    vm.$router.go(0);                
+                                }
+                            })
+                            .catch((err)=>{
+                                let status=err.response.status;
+                                if(status==903){
+                                    alert('이미 삭제한 회원입니다');
+                                }else{
+                                    alert('오류가 발생하였습니다.\n잠시 후 다시 시도하세요');
+                                }
+                            })
+                }
+            }
+        }
     }
-}
 
 </script>
 

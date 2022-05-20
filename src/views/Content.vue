@@ -42,8 +42,9 @@ export default{
         ComnCodMgr:defineAsyncComponent(()=>import('@/views/system/comnCodMgr.vue')),
         DailyOrderHistory:defineAsyncComponent(()=>import('@/views/scm/dailyOrderHistory.vue')),
         WhInventoryForm:defineAsyncComponent(()=>import('@/views/scm/whInventoryForm.vue')),
-        Userinfo:defineAsyncComponent(()=>import('@/views/scm/userinfo.vue'))
-
+        Userinfo:defineAsyncComponent(()=>import('@/views/scm/userinfo.vue')),
+        RefundInfo:defineAsyncComponent(()=>import('@/views/scm/refundInfo.vue')),
+        SupplierInfo:defineAsyncComponent(()=>import('@/views/scm/supplierInfo.vue'))
        
     },
     

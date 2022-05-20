@@ -2,23 +2,23 @@
     <form id="myForm" action=""  method="">
 
         <p class="Location">
-            <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> <span
-                class="btn_nav bold">Sample</span> <span class="btn_nav bold">창고별 재고 현황</span> 
-                <a href="../system/comnCodMgr.do" class="btn_set refresh">새로고침</a>
+            <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> 
+            <span class="btn_nav bold">거래내역</span> 
+            <span class="btn_nav bold">창고별 재고 현황</span> 
+            <a href="../system/comnCodMgr.do" class="btn_set refresh">새로고침</a>
         </p>
 
         <p class="conTitle">
             <span>창고별 재고 현황</span> 
-            <span class="fr">
-                <select v-model="param.searchgrouptype">
+            <span class="fr d-flex">
+                <select v-model="param.searchgrouptype" class="form-control h-auto mx-2">
                         <option value="" >전체</option>
                         <option value="0" >창고 명</option>
                         <option value="1" >제품 명</option>
                 </select> 
-                <input type="text" v-model="param.searchtext">
-                <a class="btnType blue" id="btnSearchGrpcod" name="btn" style="cursor: pointer;"><span onclick="search()" >검  색</span></a>
-                <a href= "" class="btnType blue" id="btnSearchGrpcod" name="btn" style="cursor: pointer;"><span >초기화</span></a>
-                
+                <input type="text" class="form-control" v-model="param.searchtext" style="width:200px;">
+                <button class="btn btn-primary mx-2">검  색</button>
+                <button class="btn btn-light mx-2">초기화</button>
             </span>
 
         </p>
@@ -34,9 +34,9 @@
                         <th scope="col">주소</th>
                     </tr>
                 </thead>
-                <tbody v-if="total>0">
+                <tbody v-if="param.total>0" id="whlist">
                     <template  v-for="item in inventories" :key="item.wh_id">
-                        <tr @click="inventoryDetail(item.wh_id)">
+                        <tr :class='item.wh_id==inventorySelected?"blur":""' @click="inventoryDetail(item.wh_id)">
                             <td>{{item.wh_id}}</td>
                             <td>{{item.wh_nm}}</td>
                             <td>{{item.st_cnt}}</td>
@@ -84,7 +84,7 @@
                     total:0,
                 },
                 inventories:[],
-                detail:{},
+                detail:[],
                 inventorySelected:0
             }
         },
@@ -103,7 +103,7 @@
                     .then((resp)=>{
                         let data=resp.data;
                         console.log(data);
-                        this.total=data.total;
+                        vm.param.total=data.total;
                         vm.param.currentPage=data.currentPage;
                         vm.param.totalPage=data.totalPage;
                         vm.inventories=data.inventories;
@@ -114,12 +114,15 @@
                     })
 
             },
+            clickPageCallBack:function(pageChosen){
+                this.getInventories(pageChosen);
+            },
             inventoryDetail:function(idx){  
                 let vm = this;
                 
-                if(vm.inventorySelected==idx|| vm.inventorySelected!=idx){
-                    vm.inventorySelected==0;
-                    vm.detail={};
+                if(vm.inventorySelected==idx){
+                    vm.inventorySelected=0;
+                    // vm.detail=[];
                 }else{
                     this.axios
                     .post('/scm/vue/stocks/'+idx)
@@ -128,6 +131,7 @@
                         vm.detail=data.detail;
                         vm.detail=data.detail;
                         vm.inventorySelected=idx;
+                        console.log(data.detail);
                     })
                     .catch((err)=>{
                         console.log(err);
@@ -172,5 +176,9 @@
             opacity:1;
             transform:translateX(0);
         }
+    }
+    .fr{
+        display: flex;
+
     }
 </style>

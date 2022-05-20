@@ -79,17 +79,12 @@ export default {
         };
     },
     mounted: function () {
-        
         let loginInfo = this.$store.state.loginInfo;
         loginInfo.usrMnuAtrt.forEach((item) => {
-            //console.log(item);
             item.isShow = false;
         });
         this.loginInfo.menulist = loginInfo.usrMnuAtrt;
         this.loginInfo.loginId = loginInfo.loginId;
-
-        console.log('menu is mounted');
-        
     },
     methods: {
         logoutproc: function () {

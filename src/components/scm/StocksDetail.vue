@@ -11,8 +11,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>                        
-                        <td  v-for="(value,name) in detail" :key="name">{{value}}</td>                        
+                    <tr v-for="(item,index) in detail" :key="index">
+                        <td>{{item.sales_type}}</td>
+                        <td>{{item.sales_nm}}</td>
+                        <td>{{item.st_cnt}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -25,7 +27,7 @@
 
 <script>
     export default{
-        props:{detail:Object},
+        props:{detail:Array},
         data:function(){
             return{
                 stockDetail:{}
