@@ -69,7 +69,7 @@
         </table>
         <div class="userInfoBtnArea bts">
             <div class="text-right">
-                <button type="button" class="btn btn-primary mx-2" @click="register">등록</button>
+                <button type="button" class="btn btn-primary mx-2" @click='register("register")'>등록</button>
                 <button type="button" class="btn btn-secondary mx-2" @click="close">취소</button>
             </div>
         </div>
@@ -102,27 +102,34 @@
                 openModal(DaumPostCode);
             },
             register:function(action){
-                let formData=new FormData(document.getElementById('userRegForm'));
-                formData.append('action',action);
 
-                let vm=this;
-                this.axios
-                    .post('/scm/vue/user',formData)
-                    .then((resp)=>{
-                        console.log(resp);
-                        if(resp.status==200){
-                            alert('정상적으로 등록되었습니다');
-                            vm.emitter.emit('close',null);
-                        }else{
-                            alert('잠시 후 다시 시도하세요');
-                        }
-                    })
-                    .catch((err)=>{
-                        let resp=err.response;
-                        if(resp.status==903){
-                            alert('이미 존재하거나 탈퇴한 회원입니다');
-                        }
-                    })
+                if(confirm('등록하시겠습니까?')){
+                    let vm=this;
+                    let formData=new FormData(document.getElementById('userRegForm'));
+                    formData.append('action',action);
+                    this.axios
+                        .post('/scm/vue/user',formData)
+                        .then((resp)=>{
+                            if(resp.status==200){
+                                alert('정상적으로 등록되었습니다');
+                                vm.emitter.emit('refresh',null);
+                            }
+                        })
+                        .catch((err)=>{
+                            let resp=err.response;
+                            switch(resp.status){
+                                case 903:{
+                                    alert('이미 존재하거나 탈퇴한 아이디입니다');
+                                    document.querySelector('input[name="loginID"]').focus();
+                                    break;
+                                }
+                                case 500:{
+                                    alert('알 수 없는 요청입니다');
+                                    break;
+                                }
+                            }
+                        })
+                }
             },
             zipSelectedCallBack:function(payLoad){
                 document.getElementById('zipCode').value=payLoad.zonecode;

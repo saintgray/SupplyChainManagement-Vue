@@ -1,7 +1,7 @@
 <template>
   <div id="comnCodMgr">
     <p class="Location">
-      <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>
+      <a href="/dashboard/home" class="btn_set home"></a>
       <span class="btn_nav bold">기준정보</span>
       <span class="btn_nav bold">공통코드 관리</span>
       <a href="../system/comnCodMgr.do" class="btn_set refresh">새로고침</a>
@@ -11,7 +11,7 @@
       <span>그룹 코드</span>
       <span>
         <table
-          style="margin-top: 10px; collapse; border: 1px #50bcdf;"
+          style="collapse; border: 1px #50bcdf;"
           width="100%"
           cellpadding="5"
           cellspacing="0"
@@ -21,38 +21,40 @@
             <td
               width="50"
               height="25"
-              style="font-size: 100%; text-align: left; padding-right: 25px"
+              style="font-size: 100%; text-align: left;"
             >
-              <select
-                id="searchKey"
-                name="searchKey"
-                style="width: 150px"
-                v-model="searchKey"
-              >
-                <option value="">전체</option>
-                <option value="grp_cod">그룹코드</option>
-                <option value="grp_cod_nm">그룹코드명</option>
-              </select>
+              <div id="searchArea" class="d-flex justify-content-around">
+                <select
+                  id="searchKey"
+                  class="form-control"
+                  style="width: 150px"
+                  v-model="searchKey"
+                >
+                  <option value="">전체</option>
+                  <option value="grp_cod">그룹코드</option>
+                  <option value="grp_cod_nm">그룹코드명</option>
+                </select>
 
-              <input
-                type="text"
-                style="width: 300px; height: 25px"
-                id="sname"
-                name="sname"
-                v-model="sname"
-              />
-              <span class="fr">
-                <a
-                  @click="listsearch('1')"
-                  class="btnType blue"
-                  id="btnSearchGrpcod"
-                  name="btn"
-                  ><span>검 색</span></a
-                >
-                <a class="btnType blue" @click="rowClicked()" name="modal"
-                  ><span>신규등록</span></a
-                >
-              </span>
+                <input
+                  type="text"
+                  style="width: 55%;"
+                  class="form-control"
+                  v-model="sname"
+                />
+                <span class="fr">
+                  <a
+                    @click="listsearch('1')"
+                    class="btn btn-primary mx-2"
+                    id="btnSearchGrpcod"
+                    name="btn"
+                  >
+                    <span>검 색</span>
+                  </a>
+                  <a class="btn btn-light mx-2" @click="rowClicked()" name="modal">
+                    <span>신규등록</span>
+                  </a>
+                </span>
+              </div>
             </td>
           </tr>
         </table>
@@ -86,8 +88,13 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="(item, index) in items" :key="item.grp_cod">
+          <template v-if="totalCnt==0">
             <tr>
+              <td colspan="7">일치하는 검색 결과가 없습니다</td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr v-for="(item, index) in items" :key="item.grp_cod">
               <td>{{ index + 1 }}</td>
               <td @click="searchdetail(item.grp_cod)">{{ item.grp_cod }}</td>
               <td>{{ item.grp_cod_nm }}</td>
@@ -105,12 +112,12 @@
       </table>
     </div>
 
-    <div class="paging_area" id="comnGrpCodPagination">
+    <div id="comnGrpCodPagination">
       <paginate class="justify-content-center"
         v-model="currentPage"
-        :page-count="page()"
-        :page-range="page()"
-        :margin-pages="page()"
+        :page-count="totalPage"
+        :page-range="5"
+        :margin-pages="0"
         :click-handler="clickCallback"
         :prev-text="'Prev'"
         :next-text="'Next'"
@@ -133,6 +140,7 @@ export default {
       items: [],
       currentPage: 1,
       pageSize: 5,
+      totalPage:1,
       totalCnt: 0,
       searchKey: "",
       sname: "",
@@ -151,12 +159,10 @@ export default {
       this.listsearch();
     },
     rowClicked: function (grpcd) {
-      alert(grpcd);
 
       if (grpcd == null || grpcd == "") {
-        console.log("Insert");
-        this.action = "I";
 
+        this.action = "I";
         const modal = openModal(grddetailModal, {
           title: "그룹코드 등록",
           grpcd: "",
@@ -199,8 +205,8 @@ export default {
         .then(function (response) {
           console.log(response);
           vm.totalCnt = response.data.totalCntComnGrpCod;
-
           vm.items = response.data.listComnGrpCodModel;
+          vm.totalPage=vm.page();
         })
         .catch(function (error) {
           alert("에러! API 요청에 오류가 있습니다. " + error);
@@ -226,21 +232,16 @@ export default {
         return result;
       }
     },
-    //fn_vueeditComnDetailCod: function (grpcd, detailcd) {
-    //alert("Vue : " + grpcd + " : " + detailcd);
-
-    //fn_editComnDetailCod(grpcd, detailcd);
   },
 };
 </script>
 
 <style>
-.paging_area{
-  height:auto;
-}
-
-.pagination {
-}
-.page-item {
-}
+  #searchArea{
+    margin-top:25px;
+    margin-bottom:25px;
+  }
+  #searchArea>*{
+    height:auto;
+  }
 </style>

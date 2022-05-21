@@ -147,11 +147,15 @@
                     }
                 }
             },
+            userInfo:{}
         },
         created:function(){
             this.emitter.on('close',()=>{
                 this.buttonAction.actionType='';
-                this.userInfo={};
+            })
+            this.emitter.on('refresh',()=>{
+                this.buttonAction.actionType='';
+                this.getUserList(this.param.selectPage);
             })
             this.getUserList();
         },
@@ -221,10 +225,12 @@
                                     alert('오류가 발생하였습니다.\n잠시 후 다시 시도하세요');
                                 }
                             })
-                }
+                    }
             }
         }
     }
+    
+    
 
 </script>
 

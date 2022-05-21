@@ -11,10 +11,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item,index) in detail" :key="index">
-                        <td>{{item.sales_type}}</td>
-                        <td>{{item.sales_nm}}</td>
-                        <td>{{item.st_cnt}}</td>
+                    <tr v-for="(salesItem,index) in detail" :key="index">
+                        <td>{{salesItem.sales_type}}</td>
+                        <td>{{salesItem.sales_nm}}</td>
+                        <td>{{salesItem.st_cnt}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -27,15 +27,18 @@
 
 <script>
     export default{
-        props:{detail:Array},
+        props:{'detail':Array},
         data:function(){
             return{
                 stockDetail:{}
             }
         },
-        methods:{
-            
-        }
+        created:function(){
+            console.log('stocks detail is created');
+        },
+        destroy:function(){
+            console.log('stocks detail is destoryed...');
+        }     
     }
 
 

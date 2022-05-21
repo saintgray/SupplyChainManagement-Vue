@@ -45,7 +45,6 @@ export default{
         Userinfo:defineAsyncComponent(()=>import('@/views/scm/userinfo.vue')),
         RefundInfo:defineAsyncComponent(()=>import('@/views/scm/refundInfo.vue')),
         SupplierInfo:defineAsyncComponent(()=>import('@/views/scm/supplierInfo.vue'))
-       
     },
     
     
