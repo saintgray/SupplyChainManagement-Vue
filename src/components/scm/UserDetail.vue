@@ -103,26 +103,28 @@ export default{
         edit:function(id){
             let vm=this;
             if(confirm('수정하시겠습니까?')){
-                this.axios(
-                        {   url:'/scm/vue/user/'+id,
-                            method:'put',
-                            data:this.userInfo},
-                        {   headers:{'Content-Type':'application/json'}}
-                )
-                .then((resp)=>{
-                    console.log(resp);
-                    if(resp.status==201){
-                        alert('정상적으로 수정되었습니다');
-                        vm.emitter.emit('refresh',null);
-                    }else{
+                // this.axios(
+                //         {   url:'/scm/vue/user/'+id,
+                //             method:'put',
+                //             data:this.userInfo},
+                //         {   headers:{'Content-Type':'application/json'}}
+                // )
+                this.axios
+                    .put('/scm/vue/user/'+id , vm.userInfo)    
+                    .then((resp)=>{
+                        console.log(resp);
+                        if(resp.status==201){
+                            alert('정상적으로 수정되었습니다');
+                            vm.emitter.emit('refresh',null);
+                        }else{
+                            alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
+                        }
+                    })
+                    .catch((err)=>{
+                        let resp=err.response;
+                        console.log(resp);
                         alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
-                    }
-                })
-                .catch((err)=>{
-                    let resp=err.response;
-                    console.log(resp);
-                    alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
-                })
+                    })
             }
         },
         close:function(){
