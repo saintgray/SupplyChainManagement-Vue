@@ -134,7 +134,7 @@
 
 </script>
 
-<style>
+<style scoped>
     .conTitle{
         padding: 0 24px;
         height: 60px;

@@ -42,7 +42,7 @@ export default{
 
 
 
-<style>
+<style scoped>
 	.searchArea{
 		margin-top: 35px;
 	    padding: 50px 0;

@@ -208,7 +208,7 @@
 </script>
 
 
-<style>
+<style scoped>
 
     #searchWrap{
         padding: 0 24px;

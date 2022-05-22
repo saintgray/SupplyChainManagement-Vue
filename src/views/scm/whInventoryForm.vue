@@ -42,7 +42,7 @@
                             <td>{{item.st_cnt}}</td>
                             <td>{{item.wh_loc}}</td>
                             <td>{{item.addr}}</td>
-
+                        </tr>
                     <template v-if="item.wh_id==inventorySelected">
                         <tr>
                             <StocksDetail :detail="detail">
@@ -146,7 +146,7 @@
 </script>
 
 
-<style>
+<style scoped>
     #searchGroup{
         width: 50%;
         height: 35px;

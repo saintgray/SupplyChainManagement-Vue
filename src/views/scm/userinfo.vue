@@ -141,13 +141,12 @@
         watch:{
             buttonAction:{
                 deep:true,
-                handler:function(changed){
+                handler(changed){
                     if(changed.actionType!='INFO'){
                         this.userInfo={};
                     }
                 }
             },
-            userInfo:{}
         },
         created:function(){
             this.emitter.on('close',()=>{
@@ -235,7 +234,7 @@
 </script>
 
 
-<style>
+<style scoped>
 	#searchArea{
 		margin-top: 35px;
 	    padding: 50px 0;

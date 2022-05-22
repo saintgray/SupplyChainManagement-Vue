@@ -1,31 +1,28 @@
 <template>
+    <p class="Location">
+        <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>    
+        <span class="btn_nav bold">기준정보</span> 
+        <span class="btn_nav bold">납품업체 관리</span> 
+        <a @click.prevent='$router.go(0)' class="btn_set refresh">새로고침</a>
+    </p>
+    <!-- SearchArea -->
+    <div id="searchArea">
+        <!-- <table style="margin-top: 10px" width="100%" cellpadding="5" cellsapcing="0" border="1">
+            <tr style="border: 0px; border-color: blue">
+                <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
+                <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;"> -->
 
+        <div class="d-flex justify-content-around">
+            <select class="form-control h-auto" v-model="page.searchType">
+                <option value="all">전체</option>
+                <option value="comp_nm" >회사명</option>
+                <option value="sales_nm" >제품명</option>
+            </select>
 
-<p class="Location">
-    <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>    
-    <span class="btn_nav bold">기준정보</span> 
-    <span class="btn_nav bold">납품업체 관리</span> 
-    <a @click.prevent='$router.go(0)' class="btn_set refresh">새로고침</a>
-</p>
-<!-- SearchArea -->
-<div id="searchArea">
-    <!-- <table style="margin-top: 10px" width="100%" cellpadding="5" cellsapcing="0" border="1">
-        <tr style="border: 0px; border-color: blue">
-            <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
-            <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;"> -->
-
-    <div class="d-flex justify-content-around">
-        <select class="form-control h-auto" v-model="param.searchType">
-
-            <option value="all">전체</option>
-            <option value="comp_nm" >회사명</option>
-            <option value="sales_nm" >제품명</option>
-        </select>
-
-        <input type="text" class="form-control" style="width:50%;" v-model="page.keyword"  @keydown="search">
-        <button type="button" class="btn btn-primary" @click='getSupplierList(page.selectPage)'>검색</button>
+            <input type="text" class="form-control" style="width:50%;" v-model="page.keyword"  @keydown="search">
+            <button type="button" class="btn btn-primary" @click='getSupplierList(page.selectPage)'>검색</button>
+        </div>
     </div>
-
     <!-- Supplier List Area -->
     <div id="suppliers" class="mt-5">
        <table class="col">
@@ -173,7 +170,7 @@
 
 </script>
 
-<style>
+<style scoped>
     #searchArea{
 		margin-top: 35px;
 	    padding: 50px 0;

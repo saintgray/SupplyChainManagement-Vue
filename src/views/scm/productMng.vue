@@ -38,7 +38,7 @@
 
 
 
-<style>
+<style scoped>
 
 	#st-btn{
 		width:51px;
