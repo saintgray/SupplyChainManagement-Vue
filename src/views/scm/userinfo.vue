@@ -126,13 +126,8 @@
                 },
                 userlist:[],
                 buttonAction:{
-                    // form or manage
+                    // NEW or INFO
                     actionType:'',
-                    // form : NEW or INFO
-                    // manage : CREATE , DELETE , EDIT
-                    action:'',
-                    // user PK for manage(DELETE, EDIT)
-                    id:''
                 },
                 userInfo:{}
             }
@@ -180,16 +175,26 @@
                     })
             },
             getUserDetail:function(id){
+                id='sdfjsdlkjflksdjfklsdjf';
                 let vm=this;
                 this.axios
-                    .get('/scm/vue/user/'+id)
+                    .get('/scm/vue/userre/'+id)
                     .then((resp)=>{
-                        let data=resp.data;
-                        vm.userInfo=data.info;
-                        vm.buttonAction.actionType="INFO";
+                        let status = resp.status;
+                        if(status==204){
+                            alert('이미 삭제된 회원입니다');
+                            vm.getUserList(vm.param.selectPage);
+                            // vm.emitter.emit('refresh',null);
+                        }else{
+                            vm.userInfo=resp.data;
+                            vm.buttonAction.actionType="INFO";
+                        }
+                        
                     })
                     .catch((err)=>{
                         // error 의 응답 객체는 err.response 로 받을 수 있다.
+                        console.log('cathed err');
+                        console.log(err.response);
                         let status=err.response.status;
                         if(status==903){
                             alert('삭제된 회원이거나 없는 회원입니다');
