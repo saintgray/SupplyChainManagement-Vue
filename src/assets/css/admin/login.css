@@ -138,7 +138,7 @@ a.btn_login {
     width: 325px;
     height: 52px;
     line-height: 52px;
-    background: #37ade4;
+    background: linear-gradient(#3585FF, #236CDE);
     color: #fff;
     text-align: center;
     font-size: 24px;

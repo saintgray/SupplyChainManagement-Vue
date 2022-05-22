@@ -1,10 +1,10 @@
 <template>
 
     <p class="Location">
-        <a href="/dashboard" class="btn_set home"></a>
+        <a @click.prevent='$router.push({path:"/dashboard/home"})' class="btn_set home"></a>
         <span class="btn_nav bold">기준정보</span>
         <span class="btn_nav bold">기업고객/직원정보관리</span>
-        <a href="/scm/userinfo.do" class="btn_set refresh"></a>
+        <a @click.prevent='$router.go(0)' class="btn_set refresh"></a>
     </p>
 
     <!-- SearchArea -->
@@ -244,32 +244,15 @@
 	#userListArea table{
 		margin:0 auto;
 	}
-	#userinfoarea{
-		padding: 10px;
-		border: 2px solid rgb(190,190,190);
-		margin-bottom: 50px;
-		
-	}
-	#userinfoarea table{
-		border-collapse: separate;
-		border-spacing: 10px 10px;
-		margin: 0 auto;
-		
-	}
-	.userInfoBtnArea{
-		margin-top: 10px;
-	}
-	#sb-userType{
-		margin-left:0 !important;
-	}
 	
-	#btn-close-daum{
+	
+	/* #btn-close-daum{
 		position:absolute;
 		right:0;
 	    bottom: 0;
 	    z-index: 11;
 	    cursor: pointer;
 		
-	}
+	} */
 
 </style>

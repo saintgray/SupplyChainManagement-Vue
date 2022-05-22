@@ -1,9 +1,9 @@
 <template>
     <p class="Location">
-        <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> 
+        <a @click.prevent='$router.push({path:"/dashboard/home"})' class="btn_set home">메인으로</a> 
         <span class="btn_nav bold">거래내역</span> 
         <span class="btn_nav bold">일별수주내역</span> 
-        <a href="../system/comnCodMgr.do" class="btn_set refresh">새로고침</a>
+        <a @click.prevent='$router.go(0)' class="btn_set refresh">새로고침</a>
     </p>
 
     <div id="searchWrap" class="d-flex flex-column">

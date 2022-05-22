@@ -30,7 +30,7 @@
 
 <script>
 
-    import Menu from "@/components/leftMenu.vue";
+    import Menu from "@/components/common/leftMenu.vue";
     
 
     export default{

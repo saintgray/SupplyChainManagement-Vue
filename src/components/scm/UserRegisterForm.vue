@@ -155,3 +155,24 @@
     }
 
 </script>
+
+<style scoped>
+    #userinfoarea{
+		padding: 10px;
+		border: 2px solid rgb(190,190,190);
+		margin-bottom: 50px;
+		
+	}
+	#userinfoarea table{
+		border-collapse: separate;
+		border-spacing: 10px 10px;
+		margin: 0 auto;
+		
+	}
+	.userInfoBtnArea{
+		margin-top: 10px;
+	}
+	#sb-userType{
+		margin-left:0 !important;
+	}
+</style>

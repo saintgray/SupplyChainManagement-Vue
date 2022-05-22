@@ -48,7 +48,9 @@ export default{
 
 </script>
     
-<style>
+<style scoped>
+
+
 
     #keyword-group{
         display: flex;
@@ -62,5 +64,15 @@ export default{
     .content select{
         height:auto;
     }
+
+    .searchArea{
+		margin-top: 35px;
+	    padding: 50px 0;
+	    border: 2px solid rgb(190,190,190);
+	}
+	#searchBtnWrap{
+		display: inline-block;
+		margin: 0 10px;
+	}
 
 </style>

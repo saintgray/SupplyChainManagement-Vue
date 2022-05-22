@@ -147,4 +147,15 @@
 
 </script>
 
+<style scoped>
+    
+	#salesListArea{
+		margin-bottom:30px;
+	}
+	#salesListArea table, #salesInfoArea table{
+		margin:0 auto;
+	}
+
+</style>
+
 

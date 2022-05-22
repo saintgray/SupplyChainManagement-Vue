@@ -3,11 +3,9 @@
         <div id="formwrap" class="bts" v-if="action">
             <div id="salesInfoArea">
                     <div class="mt20" id="area-left">
-                    
-                    
                         <div style="max-width:150px;">
                             <span v-if='action == "INFO"' class="form-control">상품번호 : {{info.sales_id}}</span>
-                            <select v-if='action=="NEW"' name="sales_type" v-model="info.sales_type" class="form-control">
+                            <select v-if='action=="NEW"' name="sales_type" v-model="info.sales_type" class="form-control h-auto">
                                 <option :value="item.dtl_cod" :key="index" v-for="(item,index) in typeBox">{{item.dtl_cod_nm}}</option>
                             </select>
                         </div>
@@ -235,3 +233,81 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+	#formwrap{
+		margin-top: 50px;
+		margin-bottom:50px;
+		border: 2px solid rgb(190,190,190);
+		padding-left:50px;
+	}
+	
+	#salesInfoArea {
+		display:flex;
+		flex-direction :row;
+		justify-content: space-around;
+		
+	}
+	
+	#salesInfoArea table{
+		border-collapse: separate;
+		border-spacing: 5px 10px;
+	}
+	#salesImgArea{
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		
+	}
+	#shortImages{
+	    display: flex;
+    	flex-wrap: nowrap;
+		margin-top:10px;
+		height:80px;
+		width: 200px;
+		padding: 10px;
+		overflow-x:scroll;
+		white-space: nowrap;
+	}
+	#shortImages img{
+		width:50px;
+		height:50px;
+		margin: 0 5px;
+	
+	}
+	#formwrap ::-webkit-scrollbar{
+		background-color:white;
+		height:10px;
+	}
+	#formwrap ::-webkit-scrollbar-thumb{
+		background-color:rgb(197,197,197);
+		border-radius:10px;
+	}
+	
+	#l_files{
+     	position: absolute;
+	    top: 20px;
+	    width: 15px;
+	    height: 15px;
+	    background: url(/images/treeview/plus.gif);
+	    background-repeat: no-repeat;
+	    background-position: 1px 1px;
+	    background-size: 15px 15px;
+	}
+	#files{
+		visibility: hidden;
+	}
+	#salesInfoArea #representPhoto{
+		width:200px;
+		height:200px;
+		margin-top:20px;
+	}
+	#dtInfoArea{
+		height:200px;
+	}
+	#area-left, #area-right{
+		flex: 1 1 auto !important;
+	
+	}
+</style>
+

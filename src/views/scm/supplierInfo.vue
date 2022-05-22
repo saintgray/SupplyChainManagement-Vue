@@ -1,6 +1,6 @@
 <template>
     <p class="Location">
-        <a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>    
+        <a @click.prevent='$router.push({path:"/dashboard/home"})' class="btn_set home">메인으로</a>    
         <span class="btn_nav bold">기준정보</span> 
         <span class="btn_nav bold">납품업체 관리</span> 
         <a @click.prevent='$router.go(0)' class="btn_set refresh">새로고침</a>

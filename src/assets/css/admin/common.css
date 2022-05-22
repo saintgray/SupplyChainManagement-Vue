@@ -349,6 +349,11 @@
 
 /* 버튼스타일 */
 
+.btn_set,
+.logout {
+    cursor: pointer;
+}
+
 .btn_icon {
     display: inline-block;
     overflow: hidden;
@@ -615,7 +620,7 @@ div.scroll {
 /* HEADER GNB */
 
 #header .logo img {
-    height: 85px;
+    height: 120px;
     width: 180px;
 }
 
@@ -1523,12 +1528,6 @@ table.row3>tbody>tr>td {
     padding: 5px 10px;
     border: 1px solid #bbc2cd;
     color: #868686;
-}
-
-table.qna {}
-
-table.qna tr.view {
-    display: ;
 }
 
 table.qna tr.view td {

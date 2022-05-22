@@ -5,7 +5,7 @@
             <div id="header">
                 <router-link :to='"/dashboard/home"'>
                     <a class="logo">
-                        <img id="logoImg" src="../assets/images/admin/login/logo_img.png"/>
+                        <img id="logoImg" src="../../assets/images/scmMenuLogo.jpg"/>
                     </a>
                 </router-link>
             </div>
@@ -14,7 +14,7 @@
             <!-- template if you logged -->
             <template v-if="loginInfo.loginId">
                 <img
-                    src="../assets/images/admin/comm/left_myImg.jpg"
+                    src="../../assets/images/admin/comm/left_myImg.jpg"
                     class="LoginImg"
                     alt="사진"
                 />
@@ -134,6 +134,7 @@ export default {
 <style>
 #logoImg {
     cursor: pointer;
+    height: 100px;
 }
 ul.lnbMenu {
     padding-left: 0;

@@ -4,7 +4,7 @@
             <tbody>
                 <tr class="basicinfo-row1">
                     <td><span>아이디</span></td>
-                    <td><input type="text" v-model="detail.loginID" name="loginID" class="form-control"></td>
+                    <td><span name="loginID" class="form-control">{{detail.loginID}}</span></td>
                     <td><span>비밀번호</span></td>
                     <td><strong>**********</strong></td>
                 </tr>
@@ -101,18 +101,29 @@ export default{
     },
     methods:{
         edit:function(id){
-            this.axios
-                .post('/scm/vue/user/'+id,new URLSearchParams(this.userInfo))
+            let vm=this;
+            if(confirm('수정하시겠습니까?')){
+                this.axios(
+                        {   url:'/scm/vue/user/'+id,
+                            method:'put',
+                            data:this.userInfo},
+                        {   headers:{'Content-Type':'application/json'}}
+                )
                 .then((resp)=>{
-                    //let data=resp;
-                    //let state=resp.status;
                     console.log(resp);
+                    if(resp.status==201){
+                        alert('정상적으로 수정되었습니다');
+                        vm.emitter.emit('refresh',null);
+                    }else{
+                        alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
+                    }
                 })
                 .catch((err)=>{
                     let resp=err.response;
                     console.log(resp);
+                    alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
                 })
-                
+            }
         },
         close:function(){
             this.emitter.emit('close',null);
@@ -134,3 +145,24 @@ export default{
 }
 
 </script>
+
+<style scoped>
+    #userinfoarea{
+		padding: 10px;
+		border: 2px solid rgb(190,190,190);
+		margin-bottom: 50px;
+		
+	}
+	#userinfoarea table{
+		border-collapse: separate;
+		border-spacing: 10px 10px;
+		margin: 0 auto;
+		
+	}
+	.userInfoBtnArea{
+		margin-top: 10px;
+	}
+	#sb-userType{
+		margin-left:0 !important;
+	}
+</style>
