@@ -155,6 +155,7 @@
         },
         methods:{
             getUserList:function(selectPage){
+                console.log('get User List');
                 let vm=this;
                 selectPage = selectPage || 1;
                 vm.param.selectPage=selectPage;
@@ -175,16 +176,14 @@
                     })
             },
             getUserDetail:function(id){
-                id='sdfjsdlkjflksdjfklsdjf';
                 let vm=this;
                 this.axios
-                    .get('/scm/vue/userre/'+id)
+                    .get('/scm/vue/user/'+id)
                     .then((resp)=>{
                         let status = resp.status;
                         if(status==204){
                             alert('이미 삭제된 회원입니다');
                             vm.getUserList(vm.param.selectPage);
-                            // vm.emitter.emit('refresh',null);
                         }else{
                             vm.userInfo=resp.data;
                             vm.buttonAction.actionType="INFO";
