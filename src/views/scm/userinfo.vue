@@ -155,7 +155,6 @@
         },
         methods:{
             getUserList:function(selectPage){
-                console.log('get User List');
                 let vm=this;
                 selectPage = selectPage || 1;
                 vm.param.selectPage=selectPage;
@@ -174,6 +173,7 @@
                     .catch((err)=>{
                         console.log(err);
                     })
+
             },
             getUserDetail:function(id){
                 let vm=this;
@@ -185,6 +185,7 @@
                             alert('이미 삭제된 회원입니다');
                             vm.getUserList(vm.param.selectPage);
                         }else{
+                            console.log(resp.data);
                             vm.userInfo=resp.data;
                             vm.buttonAction.actionType="INFO";
                         }
@@ -248,15 +249,4 @@
 	#userListArea table{
 		margin:0 auto;
 	}
-	
-	
-	/* #btn-close-daum{
-		position:absolute;
-		right:0;
-	    bottom: 0;
-	    z-index: 11;
-	    cursor: pointer;
-		
-	} */
-
 </style>

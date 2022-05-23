@@ -4,7 +4,7 @@
             <tbody>
                 <tr class="basicinfo-row1">
                     <td><span>아이디</span></td>
-                    <td><span name="loginID" class="form-control">{{detail.loginID}}</span></td>
+                    <td><span class="form-control">{{detail.loginID}}</span></td>
                     <td><span>비밀번호</span></td>
                     <td><strong>**********</strong></td>
                 </tr>
@@ -28,7 +28,8 @@
                     <td><input type="text" name="name" class="form-control" v-model="detail.name"></td>
                     <td><span>담당업무</span></td>
                     <td>
-                        <select v-model="detail.user_Type" class="form-control h-auto" name="user_Type">
+                        <select v-model="detail.user_Type" class="form-control h-auto">
+                            <option value=''>배정되지 않음</option>
                             <option value="A">SCM</option>
                             <option value="B">배송</option>
                             <option value="D">구매</option>
@@ -103,12 +104,7 @@ export default{
         edit:function(id){
             let vm=this;
             if(confirm('수정하시겠습니까?')){
-                // this.axios(
-                //         {   url:'/scm/vue/user/'+id,
-                //             method:'put',
-                //             data:this.userInfo},
-                //         {   headers:{'Content-Type':'application/json'}}
-                // )
+
                 this.axios
                     .put('/scm/vue/user/'+id , vm.userInfo)    
                     .then((resp)=>{
@@ -125,6 +121,7 @@ export default{
                         console.log(resp);
                         alert('오류가 발생했습니다. 잠시 후 다시 시도하세요');
                     })
+
             }
         },
         close:function(){
@@ -142,7 +139,7 @@ export default{
             }
             closeModal(DaumPostCode);
             document.getElementById('dtAddress').focus();
-        },
+        }
     }
 }
 
