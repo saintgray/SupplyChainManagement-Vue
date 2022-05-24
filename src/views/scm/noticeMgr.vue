@@ -6,7 +6,7 @@
         <span class="btn_nav bold">공지사항</span> 
         <a @click.prevent='$router.go(0)' class="btn_set refresh">새로고침</a>
     </p>    
-    <div id="searchArea">
+    <div id="ntcSearchArea">
         <div class="d-flex justify-content-around">
             <select class="form-control h-auto" v-model="param.oname" style='width:70px;'>
                 <option value="all">전체</option>
@@ -28,26 +28,30 @@
     </div>
 
     <div id="notices">
-        <List :notices='param.notices' class="my-5">
+        <List :notices='param.notices' class="mt-5">
 
         </List>
-        <PageNavi class="mt-4 justify-content-center"
-                :v-model="param.selectPage"
-                :page-count="param.totalPage"
-                :page-range=5
-                :margin-pages=0
-                :click-handler="getNotices"
-                :prev-text="'이전'"
-                :next-text="'다음'"
-                :prev-class="'prev'"
-                :container-class="'pagination'"
-                :page-class="'page-item'">
-        </PageNavi>
-    </div>
 
-        
-    
-    
+        <div class='n_util_pagination'>
+            <PageNavi class="mt-4 justify-content-center"
+                    :v-model="param.selectPage"
+                    :page-count="param.totalPage"
+                    :page-range=5
+                    :margin-pages=0
+                    :click-handler="getNotices"
+                    :prev-text="'이전'"
+                    :next-text="'다음'"
+                    :prev-class="'prev'"
+                    :container-class="'pagination'"
+                    :page-class="'page-item'">
+            </PageNavi>
+            <button v-if='$store.state.isScmManager' 
+                    class='btn btn-primary ml-auto'
+                    @click='editerOpen'>
+                글쓰기
+            </button>
+        </div>
+    </div>
 </template>
 
 
@@ -56,6 +60,8 @@
     import Datepicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
     import NoticeList from "@/components/common/NoticeList.vue";
+    import RegForm from "@/components/scm/NoticeRegisterForm.vue";
+    import { openModal } from "jenesius-vue-modal";
 
     
     
@@ -78,10 +84,13 @@
                     to_date:'',
                     oname:'all',
                     notices:[]
-                }
+                },
             }
         },
-        components:{PageNavi : Paginate, DatePicker : Datepicker, List : NoticeList},
+        components:{PageNavi : Paginate, 
+                    DatePicker : Datepicker, 
+                    List : NoticeList,
+        },
         watch:{
             dateRange:function(changed){
                 // console.log(changed);
@@ -89,7 +98,7 @@
                 // console.log(new Date(changed[1]));
                 this.param.from_date=new Date(changed[0]).toISOString().substr(0,10);
                 this.param.to_date=new Date(changed[1]).toISOString().substr(0,10);
-                console.log('finished setting from_date and to_date')
+                // console.log('finished setting from_date and to_date')
             }
         },
         created:function(){
@@ -100,8 +109,7 @@
             initDateRangeArr.push(today);
             this.dateRange=initDateRangeArr;
 
-            console.log('processing after finised setting from_date and to_date');
-
+            // console.log('processing after finised setting from_date and to_date');
             // set refresh event
             this.emitter.on('refreshNotice',()=>{
                 this.getNotices(this.param.currentPage);
@@ -116,15 +124,16 @@
                 this.axios
                     .get('/scm/vue/notices?'+new URLSearchParams(vm.param).toString())
                     .then((resp)=>{
-                        console.log(resp);
-                        console.log(vm.param);
                         this.param=resp.data;
-                        console.log(vm.param);
                     })
                     .catch((err)=>{
                         console.log(err.response);
                     })
             },
+            editerOpen:function(){
+                console.log('editor will opened');
+                openModal(RegForm);
+            }
         }
 
 
@@ -133,7 +142,7 @@
 
 <style>
 
-    #searchArea{
+    #ntcSearchArea{
 		margin-top: 35px;
 	    padding: 50px 0;
 	    border: 2px solid rgb(190,190,190);
@@ -141,5 +150,13 @@
     .dp__input_icon_pad{
         padding-left: 40px!important;
         width:250px;
+    }
+    #notices>.n_util_pagination{
+        position: relative;
+    }
+    #notices>.n_util_pagination button{
+        position: absolute;
+        right: 0;
+        top:0;
     }
 </style>

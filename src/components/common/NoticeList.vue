@@ -9,16 +9,16 @@
         </colgroup>
         <thead>
             <tr>
-                <th scope="col">공지 번호</th>
-                <th scope="col">공지 제목</th>
-                <th scope="col">공지 날짜</th>											
+                <th scope="col">No</th>
+                <th scope="col">제목</th>
+                <th scope="col">등록일</th>											
                 <th scope="col">작성자</th>
             </tr>
         </thead>
         <tbody>
             <template v-if='notices == null'>
                 <tr>
-                    <td colspan="4">데이터가 존재하지 않습니다.</td>
+                    <td colspan="4">일치하는 검색 결과가 없습니다</td>
                 </tr>
             </template>
             <template v-else>
@@ -40,7 +40,6 @@
         props:{'notices':Array},
         methods:{
             getNotice:function(idx){
-                console.log(idx);
                 let vm=this;
                 this.axios
                     .get('/scm/vue/notice/'+idx)
@@ -51,9 +50,7 @@
                         }else{
                             openModal(NoticeDetail,{detail : resp.data})
                         }
-                        console.log(resp);
-                        
-
+                        console.log(resp.data);
                     })
             }
         },

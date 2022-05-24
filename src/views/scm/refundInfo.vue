@@ -11,9 +11,20 @@
         <span class="flex-grow-1">반품 신청 목록</span>
         <div class="input-group" id="searchArea">    
             <input type = "text" v-model="param.searchinput" placeholder='제품명' class="mx-2">
-            <input type = "date" v-model="param.datesearch1">
+            <datepicker v-model='param.datesearch1' 
+                        :enableTimePicker='false' 
+                        :format='"yyyy-MM-dd"'>
+            </datepicker>
+            <datepicker v-model='param.datesearch2' 
+                        :enableTimePicker='false' 
+                        :format='"yyyy-MM-dd"'>
+            </datepicker>
+
+            
+
+            <!-- <input type = "date" v-model="param.datesearch1">
             <span class="input-group-text input-text">~</span>
-            <input type = "date" v-model="param.datesearch2">
+            <input type = "date" v-model="param.datesearch2"> -->
             <button class="btn btn-primary mx-2" @click="getRefunds(param.currentPage)">검  색</button>
             <button class="btn btn-light mx-2" @click='reset'>초기화</button>
         </div>
@@ -77,6 +88,8 @@
 
 <script>
     import Paginate from "vuejs-paginate-next";
+    import Datepicker from '@vuepic/vue-datepicker';
+    import '@vuepic/vue-datepicker/dist/main.css'
 
     export default{
         data:function(){
@@ -94,7 +107,8 @@
             }
         },
         components:{
-            PageNavi:Paginate
+            PageNavi:Paginate,
+            datepicker:Datepicker
         },
         created:function(){
             this.getRefunds();
@@ -109,7 +123,7 @@
                 if(dateFrom>dateTo){
                     vm.param.datesearch2=dateFrom;
                     vm.param.datesearch1=dateTo;
-                }
+                }                
                 this.axios
                     .get('/scm/vue/refunds/?'+new URLSearchParams(vm.param).toString())
                     .then((resp)=>{
